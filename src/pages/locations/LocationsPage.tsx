@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+﻿import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Button, Space, Input, Switch, Popconfirm, message, Tag, Rate, Select, Row, Col, Card } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, FilterOutlined, ClearOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
@@ -42,7 +42,11 @@ const LocationsPage: React.FC = () => {
 
   const handleTableChange = (paginationConfig: TablePaginationConfig, _: unknown, sorter: SorterResult<Location> | SorterResult<Location>[]) => {
     const s = Array.isArray(sorter) ? sorter[0] : sorter;
-    const newSortField = s.field as string || 'Id';
+    // Map 'calculated_rating' to 'rating' for backend sorting
+    let newSortField = s.field as string || 'Id';
+    if (newSortField === 'calculated_rating') {
+      newSortField = 'rating';
+    }
     const newSortOrder = s.order === 'descend' ? 'desc' : 'asc';
     setSortField(newSortField);
     setSortOrder(newSortOrder);
@@ -64,10 +68,23 @@ const LocationsPage: React.FC = () => {
 
   const columns: ColumnsType<Location> = [
     { title: 'ID', dataIndex: 'Id', key: 'Id', width: 60, sorter: true, defaultSortOrder: 'ascend' },
-    { title: 'Name', dataIndex: 'name', key: 'name', ellipsis: true, sorter: true },
-    { title: 'Address', dataIndex: 'address', key: 'address', ellipsis: true, render: (text: string) => text || '-' },
+    { title: 'Name', dataIndex: 'name', key: 'name', width: 200, sorter: true },
+    { title: 'Address', dataIndex: 'address', key: 'address', width: 250, render: (text: string) => text || '-' },
     { title: 'Types', dataIndex: 'types_display', key: 'types', width: 200, render: (text: string) => (<span>{(text || '').split(',').filter(Boolean).slice(0, 3).map((type, idx) => (<Tag key={idx} color="blue">{type.trim()}</Tag>))}</span>) },
-    { title: 'Rating', key: 'rating', width: 170, sorter: true, render: (_: unknown, record: Location) => (<Space><Rate disabled value={record.calculated_rating || 0} allowHalf /><span>({record.review_count || 0})</span></Space>) },
+    { 
+      title: 'Rating', 
+      dataIndex: 'calculated_rating',
+      key: 'rating', 
+      width: 140, 
+      sorter: true, 
+      align: 'center',
+      render: (_: unknown, record: Location) => (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
+          <Rate disabled value={record.calculated_rating || 0} allowHalf style={{ fontSize: 14 }} />
+          <span style={{ fontSize: 12, color: '#666' }}>{record.review_count || 0} review(s)</span>
+        </div>
+      ) 
+    },
     { title: 'Marker', dataIndex: 'marker', key: 'marker', width: 80, render: (marker: boolean, record: Location) => (<Switch size="small" checked={marker} onChange={(checked) => handleMarkerToggle(record.Id, checked)} />) },
     { title: 'Actions', key: 'actions', width: 100, render: (_: unknown, record: Location) => (<Space size="small"><Button type="text" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)} /><Popconfirm title="Delete this location?" onConfirm={() => handleDelete(record.Id)} okText="Yes" cancelText="No"><Button type="text" size="small" danger icon={<DeleteOutlined />} /></Popconfirm></Space>) },
   ];
