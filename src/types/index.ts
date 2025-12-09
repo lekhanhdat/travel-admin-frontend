@@ -45,7 +45,9 @@ export interface Festival {
   event_time: string;
   location: string;
   price_level: number;
-  rating: number;
+  rating?: number;
+  calculated_rating?: number;
+  review_count?: number;
   reviews: string;
   images: string;
   images_display?: string;
@@ -58,16 +60,68 @@ export interface Festival {
 
 export interface Account {
   Id: number;
+  userName: string;
   email: string;
-  fullname: string;
+  fullName: string;
   avatar: string;
   phone: string;
   address: string;
-  dob: string;
+  birthday: string;
   gender: string;
-  points: number;
+  balance: number;
   CreatedAt: string;
   UpdatedAt: string;
+}
+
+export interface AIObject {
+  Id: number;
+  title: string;
+  content: string;
+  CreatedAt: string;
+  UpdatedAt: string;
+}
+
+export interface Transaction {
+  Id: number;
+  orderCode: string;
+  username: string;
+  fullName: string;
+  amount: number;
+  description: string;
+  status: string;
+  CreatedAt: string;
+  UpdatedAt: string;
+}
+
+export interface TransactionStats {
+  totalTransactions: number;
+  totalAmount: number;
+  successfulTransactions: number;
+  pendingTransactions: number;
+}
+
+export interface Review {
+  id: string;
+  source: 'Location' | 'Festival';
+  sourceId: number;
+  sourceName: string;
+  user: string;
+  rating: number;
+  comment: string;
+  timeReview: string;
+  reviewIndex: number;
+}
+
+export interface ReviewStats {
+  totalReviews: number;
+  locationReviews: number;
+  festivalReviews: number;
+  averageRating: number;
+}
+
+export interface FilterOption {
+  id: number;
+  name: string;
 }
 
 export interface PageInfo {

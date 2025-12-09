@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
 import {
   DashboardOutlined,
@@ -6,7 +6,7 @@ import {
   CalendarOutlined,
   StarOutlined,
   UserOutlined,
-  FlagOutlined,
+  CameraOutlined,
   DollarOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -21,7 +21,7 @@ const menuItems = [
   { key: '/festivals', icon: <CalendarOutlined />, label: 'Festivals' },
   { key: '/reviews', icon: <StarOutlined />, label: 'Reviews' },
   { key: '/users', icon: <UserOutlined />, label: 'Users' },
-  { key: '/objectives', icon: <FlagOutlined />, label: 'Objectives' },
+  { key: '/objects', icon: <CameraOutlined />, label: 'AI Objects' },
   { key: '/transactions', icon: <DollarOutlined />, label: 'Transactions' },
 ];
 
@@ -40,10 +40,10 @@ const Sidebar: React.FC = () => {
       trigger={null}
       style={{ minHeight: '100vh' }}
     >
-      <div style={{ 
-        height: 64, 
-        display: 'flex', 
-        alignItems: 'center', 
+      <div style={{
+        height: 64,
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         color: '#fff',
         fontSize: collapsed ? 16 : 20,

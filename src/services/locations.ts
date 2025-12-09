@@ -1,4 +1,4 @@
-import api from './api';
+﻿import api from './api';
 import type { Location, PaginatedResponse } from '../types';
 
 export interface LocationsParams {
@@ -15,13 +15,13 @@ export interface LocationFormData {
   name: string;
   types: string;
   description: string;
-  long_description: string;
+  long_description?: string;
   address: string;
   lat: number;
   long: number;
-  phone: string;
-  website: string;
-  opening_hours: string;
+  phone?: string;
+  website?: string;
+  opening_hours?: string;
   images: string;
   videos: string;
   advise: string;
@@ -39,6 +39,11 @@ export const locationsService = {
     return response.data.data;
   },
 
+  getTypes: async (): Promise<string[]> => {
+    const response = await api.get('/locations/types');
+    return response.data.data;
+  },
+
   create: async (data: LocationFormData): Promise<Location> => {
     const response = await api.post('/locations', data);
     return response.data.data;
@@ -53,7 +58,8 @@ export const locationsService = {
     await api.delete(`/locations/${id}`);
   },
 
-  toggleMarker: async (id: number, marker: boolean): Promise<void> => {
-    await api.patch(`/locations/${id}/marker`, { marker });
+  toggleMarker: async (id: number, marker: boolean): Promise<Location> => {
+    const response = await api.patch(`/locations/${id}/marker`, { marker });
+    return response.data.data;
   },
 };
