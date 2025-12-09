@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Card, Row, Col, Statistic, Input, Select, Space, Tag, Button } from 'antd';
 import { DollarOutlined, CheckCircleOutlined, ClockCircleOutlined, SearchOutlined, ClearOutlined, TransactionOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
@@ -46,7 +46,7 @@ const TransactionsPage: React.FC = () => {
   const handleStatusChange = (value: string) => { setStatusFilter(value); fetchTransactions({ page: 1, status: value }); };
   const handleClearFilters = () => { setSearch(''); setStatusFilter(''); fetchTransactions({ page: 1, search: '', status: '' }); };
 
-  const formatAmount = (amount: number) => new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+  const formatAmount = (amount: number) => new Intl.NumberFormat('vi-VN').format(amount) + 'd';
 
   const getStatusTag = (status: string) => {
     const s = status?.toLowerCase() || '';
@@ -59,7 +59,7 @@ const TransactionsPage: React.FC = () => {
   const columns: ColumnsType<Transaction> = [
     { title: '#', key: 'rowNumber', width: 60, render: (_: unknown, __: Transaction, index: number) => (pagination.current - 1) * pagination.pageSize + index + 1 },
     { title: 'Order Code', dataIndex: 'orderCode', key: 'orderCode', width: 150 },
-    { title: 'User', dataIndex: 'fullName', key: 'fullName', width: 180, render: (text: string, record: Transaction) => text || record.username || '-' },
+    { title: 'User', dataIndex: 'userDisplay', key: 'userDisplay', width: 200, render: (text: string) => text || '-' },
     { title: 'Amount', dataIndex: 'amount', key: 'amount', width: 120, render: (amount: number) => <span style={{ fontWeight: 500, color: '#52c41a' }}>{formatAmount(amount)}</span> },
     { title: 'Description', dataIndex: 'description', key: 'description', render: (text: string) => <div style={{ whiteSpace: 'pre-wrap' }}>{text || '-'}</div> },
     { title: 'Status', dataIndex: 'status', key: 'status', width: 100, render: (status: string) => getStatusTag(status) },
@@ -70,7 +70,7 @@ const TransactionsPage: React.FC = () => {
       <h1 style={{ marginBottom: 24 }}>Transactions</h1>
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} md={6}><Card><Statistic title="Total Transactions" value={stats?.totalTransactions || 0} prefix={<TransactionOutlined />} /></Card></Col>
-        <Col xs={24} sm={12} md={6}><Card><Statistic title="Total Amount" value={stats?.totalAmount || 0} prefix={<DollarOutlined />} suffix="đ" formatter={(value) => new Intl.NumberFormat('vi-VN').format(Number(value))} /></Card></Col>
+        <Col xs={24} sm={12} md={6}><Card><Statistic title="Total Amount" value={stats?.totalAmount || 0} prefix={<DollarOutlined />} suffix="d" formatter={(value) => new Intl.NumberFormat('vi-VN').format(Number(value))} /></Card></Col>
         <Col xs={24} sm={12} md={6}><Card><Statistic title="Successful" value={stats?.successfulTransactions || 0} prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} valueStyle={{ color: '#52c41a' }} /></Card></Col>
         <Col xs={24} sm={12} md={6}><Card><Statistic title="Pending" value={stats?.pendingTransactions || 0} prefix={<ClockCircleOutlined style={{ color: '#faad14' }} />} valueStyle={{ color: '#faad14' }} /></Card></Col>
       </Row>

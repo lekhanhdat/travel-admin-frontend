@@ -84,8 +84,9 @@ export interface AIObject {
 export interface Transaction {
   Id: number;
   orderCode: string;
-  username: string;
+  userName: string;
   fullName: string;
+  userDisplay: string;
   amount: number;
   description: string;
   status: string;
