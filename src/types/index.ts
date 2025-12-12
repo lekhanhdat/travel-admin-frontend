@@ -137,3 +137,14 @@ export interface PaginatedResponse<T> {
   list: T[];
   pageInfo: PageInfo;
 }
+
+export interface Item {
+  Id: number;
+  name: string;
+  type: string;
+  description?: string;
+  points?: number;
+  image?: string;
+  CreatedAt?: string;
+  UpdatedAt?: string;
+}

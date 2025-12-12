@@ -1,4 +1,4 @@
-﻿import api from './api';
+import api from './api';
 import type { Review, ReviewStats, PaginatedResponse, FilterOption } from '../types';
 
 export interface ReviewsParams {
@@ -7,6 +7,11 @@ export interface ReviewsParams {
   search?: string;
   locationId?: string;
   festivalId?: string;
+}
+
+export interface FilterOptions {
+  locations: FilterOption[];
+  festivals: FilterOption[];
 }
 
 export const reviewsService = {
@@ -28,6 +33,14 @@ export const reviewsService = {
   getFestivalOptions: async (): Promise<FilterOption[]> => {
     const response = await api.get('/reviews/festivals');
     return response.data.data;
+  },
+
+  getFilterOptions: async (): Promise<FilterOptions> => {
+    const [locations, festivals] = await Promise.all([
+      reviewsService.getLocationOptions(),
+      reviewsService.getFestivalOptions(),
+    ]);
+    return { locations, festivals };
   },
 
   delete: async (source: string, sourceId: number, reviewIndex: number): Promise<void> => {

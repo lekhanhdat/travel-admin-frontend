@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Card, Row, Col, Statistic, Input, Select, Space, Tag, Rate, Avatar, Button } from 'antd';
 import { StarOutlined, EnvironmentOutlined, CalendarOutlined, SearchOutlined, ClearOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
@@ -22,12 +22,14 @@ const ReviewsPage: React.FC = () => {
   const fetchReviews = useCallback(async (params: { page?: number; limit?: number; search?: string; locationId?: number; festivalId?: number } = {}) => {
     try {
       setLoading(true);
+      const locId = params.locationId !== undefined ? params.locationId : locationFilter;
+      const festId = params.festivalId !== undefined ? params.festivalId : festivalFilter;
       const result = await reviewsService.getAll({
         page: params.page || pagination.current,
         limit: params.limit || pagination.pageSize,
         search: params.search !== undefined ? params.search : search,
-        locationId: params.locationId !== undefined ? params.locationId : locationFilter,
-        festivalId: params.festivalId !== undefined ? params.festivalId : festivalFilter,
+        locationId: locId !== undefined ? String(locId) : undefined,
+        festivalId: festId !== undefined ? String(festId) : undefined,
       });
       setReviews(result.list || []);
       setPagination(prev => ({ ...prev, current: result.pageInfo?.page || 1, total: result.pageInfo?.totalRows || 0 }));
