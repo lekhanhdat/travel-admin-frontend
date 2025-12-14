@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+﻿import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Card, Row, Col, Statistic, Input, Select, Space, Tag, Rate, Avatar, Button } from 'antd';
 import { StarOutlined, EnvironmentOutlined, CalendarOutlined, SearchOutlined, ClearOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
@@ -37,7 +37,20 @@ const ReviewsPage: React.FC = () => {
     finally { setLoading(false); }
   }, [pagination.current, pagination.pageSize, search, locationFilter, festivalFilter]);
 
-  useEffect(() => { fetchStats(); fetchFilters(); fetchReviews({ page: 1 }); }, []);
+  // Staggered loading to prevent overwhelming the backend with simultaneous heavy requests
+  useEffect(() => {
+    const loadData = async () => {
+      // Load reviews first (main content)
+      await fetchReviews({ page: 1 });
+      // Small delay before loading stats
+      await new Promise(resolve => setTimeout(resolve, 150));
+      await fetchStats();
+      // Small delay before loading filters
+      await new Promise(resolve => setTimeout(resolve, 150));
+      await fetchFilters();
+    };
+    loadData();
+  }, []);
 
   const handleTableChange = (paginationConfig: TablePaginationConfig) => {
     setPagination(prev => ({ ...prev, current: paginationConfig.current || 1, pageSize: paginationConfig.pageSize || 10 }));
@@ -76,7 +89,7 @@ const ReviewsPage: React.FC = () => {
           <Col xs={24} sm={12} md={6}><Space><Button onClick={handleSearch}>Search</Button><Button icon={<ClearOutlined />} onClick={handleClearFilters}>Clear</Button></Space></Col>
         </Row>
       </Card>
-      <Table columns={columns} dataSource={reviews} rowKey="id" loading={loading} pagination={{ ...pagination, showSizeChanger: true, showTotal: (total) => `Total ${total} reviews` }} onChange={handleTableChange} scroll={{ x: 1000 }} size="middle" />
+      <Table columns={columns} dataSource={reviews} rowKey="id" loading={loading} pagination={{ ...pagination, showSizeChanger: true, showTotal: (total) => 'Total ' + total + ' reviews' }} onChange={handleTableChange} scroll={{ x: 1000 }} size="middle" />
     </div>
   );
 };
